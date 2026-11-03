@@ -1,7 +1,7 @@
 class Solution:
     def findEquilibrium(self, arr):
-        total_sum = sum(arr)
         left_sum = 0
+        total_sum = sum(arr)
         for i in range(1, len(arr)):
             left_sum += arr[i - 1]
             right_sum = total_sum - left_sum - arr[i]
