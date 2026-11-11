@@ -10,10 +10,8 @@ class LibraryItem(ABC):
         return self.__available
     def mark_borrowed(self):
         self.__available = False
-        pass 
     def mark_returned(self):
         self.__available = True
-        pass  
     @abstractmethod
     def late_fee(self, days_late):
         pass  # every child class must implement this
@@ -51,30 +49,19 @@ class Member:
         self.max_items = max_items
         self.__borrowed = []                 # private list of items
     def borrow(self, item):
-        try:
-            if not item.is_available():
-                raise ValueError(f"Item '{item.title}' is not available for borrowing.")
-            if len(self.__borrowed) >= self.max_items:
-                raise ValueError(f"Member '{self.name}' has reached the borrowing limit of {self.max_items} items.")
-            item.mark_borrowed()
-            self.__borrowed.append(item)
-        except ValueError as e:
-            print(f"Error: {e}")
-        # TODO: raise ValueError (with a message) if the item is not available
-        # TODO: raise ValueError (with a message) if the limit is reached
-        # TODO: mark the item borrowed and add it to the list
-        pass
+        if not item.is_available():
+            raise ValueError(f"Item '{item.title}' is not available for borrowing.")
+        if len(self.__borrowed) >= self.max_items:
+            raise ValueError(f"Member '{self.name}' has reached the borrowing limit of {self.max_items} items.")
+        item.mark_borrowed()
+        self.__borrowed.append(item)
+
     def return_item(self, item, days_late=0):
-        try:
-            if item not in self.__borrowed:
-                raise ValueError(f"Item '{item.title}' is not borrowed by member '{self.name}'.")
-            item.mark_returned()
-            self.__borrowed.remove(item)
-            return item.late_fee(days_late)
-        except ValueError as e:
-            print(f"Error: {e}")
-        # TODO: raise ValueError (with a message) if the item is not in the list
-        # TODO: mark returned, remove from list, return item.late_fee(days_late)
-        pass
+        if item not in self.__borrowed:
+            raise ValueError(f"Item '{item.title}' is not borrowed by member '{self.name}'.")
+        item.mark_returned()
+        self.__borrowed.remove(item)
+        return item.late_fee(days_late)
+
     def borrowed_titles(self):
         return [item.title for item in self.__borrowed]
